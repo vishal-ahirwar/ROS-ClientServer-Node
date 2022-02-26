@@ -1,7 +1,8 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
-#define WHEEL_RADIUS 12.5 / 100 // centimeters to -->> meter
+// #define WHEEL_RADIUS 12.5 / 100 // centimeters to -->> meter
 #define PI 3.14285714286
+float WHEEL_RADIUS;
 void speed(const std_msgs::Float32 &rpm);
 ros::Publisher speed_pub;
 int main(int argc, char **argv)
@@ -16,7 +17,16 @@ int main(int argc, char **argv)
 };
 void speed(const std_msgs::Float32 &rpm)
 {
+    ros::NodeHandle sub_callback_node_handle;
     std_msgs::Float32 __speed;
-    __speed.data = ((2 * WHEEL_RADIUS * PI) + (rpm.data * 60));
-    speed_pub.publish(__speed);
+    if (sub_callback_node_handle.getParam("wheel_radius", WHEEL_RADIUS))
+    {
+        // __speed.data = WHEEL_RADIUS;
+        __speed.data = ((2 * WHEEL_RADIUS * PI) + (rpm.data / 60));
+        speed_pub.publish(__speed);
+    }
+    else
+    {
+        ROS_WARN("[V]--->WHEEL RADIUS NOT SET!");
+    };
 };
