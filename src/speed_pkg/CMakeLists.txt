@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  message_generation
+
 )
 
 ## System dependencies are found with CMake's conventions
@@ -55,11 +57,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  OddEvenCheck.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -69,10 +70,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  sensor_msgs
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -139,6 +141,14 @@ target_link_libraries(pub_node ${catkin_LIBRARIES})
 
 add_executable(sub_node src/subscriber.cpp)
 target_link_libraries(sub_node ${catkin_LIBRARIES})
+
+add_executable(odd_even_server src/service_server.cpp)
+target_link_libraries(odd_even_server ${catkin_LIBRARIES})
+add_dependencies(odd_even_server speed_pkg_generate_messages_cpp)
+
+add_executable(odd_even_client src/service_client.cpp)
+target_link_libraries(odd_even_client ${catkin_LIBRARIES})
+add_dependencies(odd_even_client speed_pkg_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
